@@ -1,0 +1,21 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "plugin": [
+        "@warp-dot-dev/opencode-warp",
+        "superpowers@git+https://github.com/obra/superpowers.git"
+    ],
+    "mcp": {
+        "codebase-memory": {
+            "command": [
+                "C:/Users/andre/.local/bin/codebase-memory-mcp.exe"
+            ],
+            "type": "local",
+            "enabled": true
+        }
+    },
+    "permission": {
+        "skill": {
+            "*": "allow"
+        }
+    }
+}

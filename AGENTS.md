@@ -1,0 +1,5 @@
+## Mandatory Code Exploration Rules
+
+1. **Skill Auto-Activation**: For ANY query related to code, structure, functions, errors, or project architecture, you MUST immediately execute `skill({ name: "codebase-memory" })` or use the `codebase-memory-mcp` MCP server tools directly.
+2. **Auto-Index & Self-Healing (CRITICAL)**: Before querying the knowledge graph, verify the project status. If `index_status` or any graph tool returns an error such as `"project not found or not indexed"` (which happens when folders are renamed or moved), you MUST IMMEDIATELY execute `index_repository(repo_path=".")` to index the current workspace under its new path before attempting any graph search.
+3. **Priority over File Search**: NEVER use `grep`, `glob`, or read source files directly as a first step. Always query the knowledge graph first using `search_graph`, `trace_path`, or `get_architecture`.
