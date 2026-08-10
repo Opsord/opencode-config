@@ -10,22 +10,19 @@ permission:
   grep: allow
   lsp: allow
   bash:
-    "git diff*": allow
-    "git status*": allow
-    "git log*": allow
-    "git show*": allow
-    "git blame*": allow
-    "git branch*": allow
+    # Test, lint, and typecheck commands for various languages and frameworks
     "npm test*": allow
     "npm run lint*": allow
     "npm run typecheck*": allow
+    "pnpm test*": allow
+    "pnpm run lint*": allow
+    "bun test*": allow
     "cargo test*": allow
     "cargo clippy*": allow
     "pytest *": allow
     "ruff *": allow
     "eslint *": allow
     "tsc *": allow
-    "*": ask
 ---
 
 # Role: Raton Auditor (Code Quality & Architecture Guardian)

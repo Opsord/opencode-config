@@ -4,15 +4,13 @@ mode: primary
 color: warning
 temperature: 0.2
 permission:
-  read: allow
   edit: allow
-  glob: allow
-  grep: allow
-  lsp: allow
-  todowrite: allow
   bash:
+    # Build, lint, and test commands for various languages and frameworks
     "npm *": allow
     "npx *": allow
+    "pnpm *": allow
+    "bun *": allow
     "node *": allow
     "cargo *": allow
     "python *": allow
@@ -20,17 +18,18 @@ permission:
     "ruff *": allow
     "eslint *": allow
     "tsc *": allow
-    "git add*": allow
-    "git commit*": allow
-    "git status*": allow
-    "git diff*": allow
-    "git log*": allow
-    "git branch*": allow
-    "git rev-parse*": allow
+    # PowerShell commands for file manipulation
+    "New-Item*": allow
+    "Set-Content*": allow
+    # Git commands for version control
+    "git *": allow
+    # Destructive commands that require confirmation
     "git checkout*": ask
     "git stash*": ask
+    "git reset*": ask
+    "git clean*": ask
+    "git push*": ask
     "rm *": ask
-    "*": ask
 ---
 
 # Role: Hormiga Dev (Senior Software Developer)

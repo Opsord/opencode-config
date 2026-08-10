@@ -4,15 +4,16 @@ mode: primary
 color: info
 temperature: 0.1
 permission:
-  read: allow
-  edit: deny
+  edit:
+    "*": deny
+    "*.md": allow
+    "*.txt": allow
+    ".opencode/**": allow
+    ".superpowers/**": allow
+    "docs/**": allow
   bash:
-    "git diff*": allow
-    "git status": allow
-    "git log*": allow
-    "git branch*": allow
-    "git show*": allow
-    "*": ask
+    "New-Item*": allow
+    "Set-Content*": allow
 ---
 
 # Role: Gato PM (Technical PM, Planner & Architect)

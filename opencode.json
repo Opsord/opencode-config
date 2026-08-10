@@ -1,21 +1,53 @@
 {
     "$schema": "https://opencode.ai/config.json",
-    "plugin": [
-        "@warp-dot-dev/opencode-warp@0.1.5",
-        "superpowers@git+https://github.com/obra/superpowers.git"
-    ],
+    "permission": {
+        "read": {
+            "*": "allow",
+            "*.env*": "ask",
+            "*.env.example": "allow",
+            "*.env.template": "allow"
+        },
+        "edit": {
+            "*": "allow",
+            "*.env*": "ask",
+            "*.env.example": "ask",
+            "*.env.template": "ask"
+        },
+        "external_directory": {
+            "*": "ask",
+            "~/.config/opencode/**": "allow",
+            "~/.cache/opencode/**": "allow"
+        },
+        "bash": {
+            "*": "ask",
+            "Write-Output*": "allow",
+            "echo*": "allow",
+            "$*": "allow",
+            "Test-Path*": "allow",
+            "Get-ChildItem*": "allow",
+            "Get-Content*": "allow",
+            "Get-Command*": "allow",
+            "Out-Null*": "allow",
+            "dir*": "allow",
+            "ls*": "allow",
+            "git status*": "allow",
+            "git diff*": "allow",
+            "git log*": "allow",
+            "git branch*": "allow",
+            "git show*": "allow",
+            "git blame*": "allow"
+        }
+    },
     "mcp": {
         "codebase-memory": {
+            "type": "local",
             "command": [
                 "C:/Users/andre/.local/bin/codebase-memory-mcp.exe"
             ],
-            "type": "local",
-            "enabled": true
-        }
-    },
-    "permission": {
-        "skill": {
-            "*": "allow"
+            "enabled": true,
+            "environment": {
+                "CBM_MEM_BUDGET_MB": "4096"
+            }
         }
     }
 }
