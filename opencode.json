@@ -27,6 +27,8 @@
             "Get-ChildItem*": "allow",
             "Get-Content*": "allow",
             "Get-Command*": "allow",
+            "Select-Object*": "allow",
+            "Where-Object*": "allow",
             "Out-Null*": "allow",
             "dir*": "allow",
             "ls*": "allow",
