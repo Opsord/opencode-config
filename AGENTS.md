@@ -5,3 +5,7 @@
    - **Keep the index fresh (CRITICAL)**: Before relying on graph results, run `detect_changes`. If `changed_files` is non-empty, re-index with `index_repository(repo_path=".", mode="moderate")` first. Re-index at the start of code work on a project and after making code edits before querying the graph about that code.
    - **Keep `.codebase-memory/` out of git**: When indexing a repo, verify with `git check-ignore .codebase-memory/`; if not ignored, append `.codebase-memory/` to `.git/info/exclude`. Full workflow in the `codebase-memory` skill.
 3. **Priority over File Search**: NEVER use `grep`, `glob`, or read source files directly as a first step. Always query the knowledge graph first using `search_graph`, `trace_path`, or `get_architecture`.
+
+## Command Execution & Permission Protocol
+
+4. **Pre-Execution Justification**: Before invoking ANY terminal/bash command or script (especially those that modify files, run builds, or query external tools), you MUST first output a brief 1-line text message explaining WHAT the command does and WHY it is necessary for the current step.

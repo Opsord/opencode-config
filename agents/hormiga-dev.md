@@ -6,9 +6,9 @@ temperature: 0.2
 permission:
   edit: allow
   bash:
-    # Build, lint, and test commands for various languages and frameworks
-    "npm *": allow
-    "npx *": allow
+    # Herramientas locales de desarrollo y pruebas
+    "npm test*": allow
+    "npm run *": allow
     "pnpm *": allow
     "bun *": allow
     "node *": allow
@@ -18,12 +18,11 @@ permission:
     "ruff *": allow
     "eslint *": allow
     "tsc *": allow
-    # PowerShell commands for file manipulation
-    "New-Item*": allow
-    "Set-Content*": allow
-    # Git commands for version control
+    # Descargas de paquetes remotos no verificados (requieren aprobación)
+    "npx *": ask
+    # Operaciones de Git generales y excepciones sensibles
     "git *": allow
-    # Destructive commands that require confirmation
+    "git commit*": ask
     "git checkout*": ask
     "git stash*": ask
     "git reset*": ask

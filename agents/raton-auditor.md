@@ -10,7 +10,6 @@ permission:
   grep: allow
   lsp: allow
   bash:
-    # Test, lint, and typecheck commands for various languages and frameworks
     "npm test*": allow
     "npm run lint*": allow
     "npm run typecheck*": allow

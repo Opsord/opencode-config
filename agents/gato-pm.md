@@ -11,9 +11,6 @@ permission:
     ".opencode/**": allow
     ".superpowers/**": allow
     "docs/**": allow
-  bash:
-    "New-Item*": allow
-    "Set-Content*": allow
 ---
 
 # Role: Gato PM (Technical PM, Planner & Architect)
