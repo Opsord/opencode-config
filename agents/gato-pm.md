@@ -11,6 +11,7 @@ permission:
     ".opencode/**": allow
     ".superpowers/**": allow
     "docs/**": allow
+  # bash hereda el global: cmdlets de lectura + git status/diff/log/show/blame
 ---
 
 # Role: Gato PM (Technical PM, Planner & Architect)

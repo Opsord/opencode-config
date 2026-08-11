@@ -16,6 +16,7 @@ permission:
     "*": ask
     "~/.config/opencode/**": allow
     "~/.cache/opencode/**": allow
+  # bash hereda el global: cmdlets de lectura + git status/diff/log/show/blame
 ---
 
 # Role: Cuervo Pensador (OpenCode Meta-Config Architect & Auditor)

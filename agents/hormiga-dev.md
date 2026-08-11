@@ -6,29 +6,25 @@ temperature: 0.2
 permission:
   edit: allow
   bash:
-    # Herramientas locales de desarrollo y pruebas
-    "npm test*": allow
-    "npm run *": allow
-    "pnpm *": allow
-    "bun *": allow
-    "node *": allow
-    "cargo *": allow
-    "python *": allow
-    "pytest *": allow
-    "ruff *": allow
-    "eslint *": allow
-    "tsc *": allow
-    # Descargas de paquetes remotos no verificados (requieren aprobación)
-    "npx *": ask
-    # Operaciones de Git generales y excepciones sensibles
-    "git *": allow
-    "git commit*": ask
-    "git checkout*": ask
-    "git stash*": ask
-    "git reset*": ask
-    "git clean*": ask
-    "git push*": ask
-    "rm *": ask
+    # Git: add libre, commit/push y operaciones destructivas piden permiso
+    "git *": "allow"
+    "git commit*": "ask"
+    "git push*": "ask"
+    "git checkout*": "ask"
+    "git stash*": "ask"
+    "git reset*": "ask"
+    "git clean*": "ask"
+    "git pull*": "ask"
+    "git merge*": "ask"
+    "git rebase*": "ask"
+    "git cherry-pick*": "ask"
+    "git revert*": "ask"
+    "git tag*": "ask"
+    # Build/run adicionales (tests y lint ya heredados del global)
+    "cargo build*": "allow"
+    "cargo run*": "allow"
+    "make *": "allow"
+    "prettier *": "allow"
 ---
 
 # Role: Hormiga Dev (Senior Software Developer)
