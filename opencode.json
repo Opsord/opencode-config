@@ -57,5 +57,9 @@
                 "CBM_MEM_BUDGET_MB": "4096"
             }
         }
-    }
+    },
+    "plugin": [
+        "superpowers@git+https://github.com/obra/superpowers.git",
+        "@dietrichgebert/ponytail"
+    ]
 }
