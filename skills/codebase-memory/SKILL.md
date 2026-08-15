@@ -1,52 +1,76 @@
 ---
 name: codebase-memory
-description: REQUIRED: Automatically load this skill for ANY request involving code analysis, searching functions or classes, exploring architecture, tracing calls, inspecting the codebase, or keeping the code index fresh (e.g. after code changes, git pull, or merge).
+description: "Use the codebase knowledge graph for structural code queries. Triggers on: explore the codebase, understand the architecture, what functions exist, show me the structure, who calls this function, what does X call, trace the call chain, find callers of, show dependencies, impact analysis, dead code, unused functions, high fan-out, refactor candidates, code quality audit, graph query syntax, Cypher query examples, edge types, how to use search_graph."
 ---
 
-# Codebase Knowledge Graph (codebase-memory-mcp)
+# Codebase Memory — Knowledge Graph Tools
 
-This project uses `codebase-memory-mcp` to maintain a persistent knowledge graph of the codebase. ALWAYS prefer MCP graph tools over grep/glob/file-search for code discovery.
+Graph tools return precise structural results in ~500 tokens vs ~80K for grep.
 
-## 0. Pre-requisite (On-Demand Indexing)
-- Always verify index status using `index_status` or run `index_repository(repo_path=".", mode="moderate")` when starting code exploration on an unindexed project.
+## Quick Decision Matrix
 
-## Index Freshness (Re-Index on Change)
-The knowledge graph goes stale whenever the code changes. Before trusting graph results for a project:
+| Question | Tool call |
+|----------|----------|
+| Who calls X? | `trace_path(direction="inbound")` |
+| What does X call? | `trace_path(direction="outbound")` |
+| Full call context | `trace_path(direction="both")` |
+| Find by name pattern | `search_graph(name_pattern="...")` |
+| Dead code | `search_graph(max_degree=0, exclude_entry_points=true)` |
+| Cross-service edges | `query_graph` with Cypher |
+| Impact of local changes | `detect_changes()` |
+| Risk-classified trace | `trace_path(risk_labels=true)` |
+| Text search | `search_code` or Grep |
 
-1. Check freshness with `detect_changes(project="<name>")` (cheap git diff from the last indexed commit to HEAD).
-   - `changed_files` empty → index is fresh, proceed.
-   - `changed_files` non-empty → index is stale.
-2. If stale, re-index: `index_repository(repo_path=".", mode="moderate")`, then continue.
+## Exploration Workflow
+1. `list_projects` — check if project is indexed
+2. `get_graph_schema` — understand node/edge types
+3. `search_graph(label="Function", name_pattern=".*Pattern.*")` — find code
+4. `get_code_snippet(qualified_name="project.path.FuncName")` — read source
 
-Re-index in these situations:
-- At the start of any code work on an indexed project (covers git pull, changes made by other tools, or previous sessions).
-- After making code edits in this session, before querying the graph about the edited code (re-index once per completed task, not after every single edit).
+## Tracing Workflow
+1. `search_graph(name_pattern=".*FuncName.*")` — discover exact name
+2. `trace_path(function_name="FuncName", direction="both", depth=3)` — trace
+3. `detect_changes()` — map git diff to affected symbols
 
-Note: `detect_changes` is nearly free — always use it instead of re-indexing blindly.
+## Evidence Tiers
+- **Scout (Tier 1):** fast positive lookup with few graph calls and targeted source checks. Treat results as provisional; never make absence, exhaustive, dead-code, or complete-impact claims.
+- **Verify (Tier 2, default):** task-directed searches, relevant trace directions, exact snippets for material claims, and all relevant result pages.
+- **Auditor (Tier 3):** bounded-scope full verification with a current graph generation, complete relevant pagination, both call directions and broader relationships when material, plus explicit unresolved limitations.
+- **Every tier:** after candidate paths are known, call `check_index_coverage` once with every evidence path. For negative or exhaustive claims also include the relevant scopes. A clean result means no recorded gap, not proof of completeness. For partial, skipped, excluded, stale, pending, or unknown coverage, read/grep the reported ranges or scope before relying on the graph.
 
-## Keep `.codebase-memory/` Out of Git
-`.codebase-memory/` holds index artifacts and must never be committed.
+## Sessions and Subagents
+- At session start or after compaction, call `list_projects`/`index_status` before structural exploration, then choose Scout, Verify, or Auditor for the task.
+- Before delegating, query the graph and coverage in the parent. Pass the tier, exact project, generation/freshness, bounded scope, queries and pagination state, qualified symbols, paths, call-chain findings, coverage ranges/reasons, source fallback already performed, and unresolved questions to the child.
+- Runtimes such as Hermes isolate child context: put those graph findings in the `context` argument to `delegate_task`; do not assume the child inherits MCP access or the parent's conversation.
+- A child without MCP tools must not call or claim MCP access. It should work from the supplied evidence and use read/grep on exact source, especially every reported missed-coverage range.
 
-- When starting to index a repo, verify it is ignored: `git check-ignore .codebase-memory/`
-- If not ignored, append `.codebase-memory/` to the repo-local exclude file (`.git/info/exclude`) — this does not touch `.gitignore` or history.
-- A global `core.excludesFile` should already cover all repos on this machine; the per-repo check is a safety net for repos that don't inherit it.
+## Quality Analysis
+- Dead code: `search_graph(max_degree=0, exclude_entry_points=true)`
+- High fan-out: `search_graph(min_degree=10, relationship="CALLS", direction="outbound")`
+- High fan-in: `search_graph(min_degree=10, relationship="CALLS", direction="inbound")`
 
-## Priority Order
-1. `index_repository` / `index_status` — Verify or initialize graph index when needed
-2. `search_graph` — Find functions, classes, routes, or variables by pattern
-3. `trace_path` — Trace function callers (inbound) or callees (outbound)
-4. `get_code_snippet` — Read specific function/class source code
-5. `query_graph` — Run Cypher queries for complex structural patterns
-6. `get_architecture` — High-level project summary and boundary mapping
+## 15 MCP Tools
+`index_repository`, `index_status`, `list_projects`, `delete_project`,
+`search_graph`, `search_code`, `trace_path`, `detect_changes`,
+`query_graph`, `get_graph_schema`, `get_code_snippet`, `get_architecture`,
+`check_index_coverage`, `manage_adr`, `ingest_traces`
 
-## When to fall back to grep/glob
-- Searching for exact string literals, error messages, or config key values
-- Searching non-code files (Dockerfiles, shell scripts, raw configs)
-- When MCP graph tools return insufficient or empty results
+## Edge Types
+CALLS, HTTP_CALLS, ASYNC_CALLS, DATA_FLOWS, IMPORTS, DEFINES, DEFINES_METHOD,
+HANDLES, IMPLEMENTS, OVERRIDE, USAGE, CALL_REFERENCE, CONFIGURES, FILE_CHANGES_WITH,
+SIMILAR_TO, SEMANTICALLY_RELATED, CONTAINS_FILE, CONTAINS_FOLDER,
+CONTAINS_PACKAGE
 
-## Examples
-- Index current project: `index_repository(repo_path=".", mode="moderate")`
-- Check freshness: `detect_changes(project="<project-name>")`
-- Find a handler: `search_graph(name_pattern=".*OrderHandler.*")`
-- Who calls it: `trace_path(function_name="OrderHandler", direction="inbound")`
-- Read source code: `get_code_snippet(qualified_name="pkg/orders.OrderHandler")`
+## Cypher Examples (for query_graph)
+```
+MATCH (a)-[r:HTTP_CALLS]->(b) RETURN a.name, b.name, r.url_path, r.confidence LIMIT 20
+MATCH (f:Function) WHERE f.name =~ '.*Handler.*' RETURN f.name, f.file_path
+MATCH (a)-[r:CALLS]->(b) WHERE a.name = 'main' RETURN b.name
+```
+
+## Gotchas
+1. `search_graph(relationship="HTTP_CALLS")` filters nodes by degree — use `query_graph` with Cypher to see actual edges.
+2. `query_graph` has a 100k row ceiling — add a Cypher `LIMIT` for broad queries or use `search_graph` pagination.
+3. `trace_path` needs exact names — use `search_graph(name_pattern=...)` first.
+4. `direction="outbound"` misses cross-service callers — use `direction="both"`.
+5. `search_graph` results default to 50 per page — check `has_more` and use `offset`.

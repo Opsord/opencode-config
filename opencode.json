@@ -70,6 +70,7 @@
             "git blame*": "allow",
             "pnpm test*": "allow",
             "pnpm run *": "allow",
+            "pnpm lint*": "allow",
             "pnpm build*": "allow",
             "npm test*": "allow",
             "npm run *": "allow",
@@ -101,6 +102,9 @@
             "pnpm add*": "ask",
             "pnpm install*": "ask",
             "npm install*": "ask",
+            "npx ng*": "allow",
+            "npx eslint*": "allow",
+            "npx prettier*": "allow",
             "npx *": "ask",
             "New-Item*": "ask",
             "Set-Content*": "ask",
@@ -113,15 +117,18 @@
         }
     },
     "mcp": {
-        "codebase-memory": {
+        "figma-xintec": {
             "type": "local",
             "command": [
-                "C:/Users/andre/.local/bin/codebase-memory-mcp.exe"
+                "cmd",
+                "/c",
+                "npx",
+                "-y",
+                "figma-developer-mcp",
+                "--figma-api-key=figd_vXp1z63BkCbXJMS-qdf3t6c6oftNQiJ5b6QG_u6I",
+                "--stdio"
             ],
-            "enabled": true,
-            "environment": {
-                "CBM_MEM_BUDGET_MB": "4096"
-            }
+            "enabled": true
         }
     }
 }
