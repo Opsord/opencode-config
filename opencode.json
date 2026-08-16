@@ -116,6 +116,10 @@
             "Add-Content *.env*": "ask"
         }
     },
+    "plugin": [
+        "~/.config/opencode/node_modules/superpowers",
+        "~/.config/opencode/node_modules/@dietrichgebert/ponytail"
+    ],
     "mcp": {
         "figma-xintec": {
             "type": "local",
@@ -125,7 +129,7 @@
                 "npx",
                 "-y",
                 "figma-developer-mcp",
-                "--figma-api-key=figd_vXp1z63BkCbXJMS-qdf3t6c6oftNQiJ5b6QG_u6I",
+                "--figma-api-key={file:.figma-api-key}",
                 "--stdio"
             ],
             "enabled": true
