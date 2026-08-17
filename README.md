@@ -59,6 +59,39 @@ Invoke with `@agent-name` inside opencode:
 | `@codebase-memory-auditor` | subagent | Graph audit Tier 3 (full coverage) |
 | `@codebase-memory-scout` | subagent | Graph lookup Tier 1 (fast and provisional) |
 
+## Model vision support (OpenCode Zen / Go)
+
+_Last updated: 2026-08-16 — source: [models.dev](https://models.dev/api.json)._
+
+Needed for `impeccable`'s `live` (annotated screenshots) and `critique`/`audit` (visual inspection) flows. Re-check `models.dev` before trusting this table long-term — providers add/drop image support between releases.
+
+### ✅ Vision-capable (accepts images)
+
+| Model | Availability | Input modalities |
+|-------|---------------|-------------------|
+| Claude Sonnet 5 / Opus 5 / Opus 4.5-4.8 / Fable 5 / Haiku 4.5 | Zen | text, image, pdf |
+| GPT 5 / 5.1 / 5.2 / 5.4 / 5.5 / 5.6 Sol-Terra-Luna (and Codex variants) | Zen | text, image (+pdf on most) |
+| Gemini 3 Flash / 3.1 Pro / 3.5-3.7 Flash | Zen | text, image, video, audio, pdf |
+| Grok 4.5 / 4.6 | Zen, Go (4.5) | text, image |
+| Muse Spark 1.2 | Zen | text, image, video, pdf, audio |
+| Kimi K2.5 / K2.6 / K2.7 Code / K3 | Zen, Go | text, image, video |
+| Qwen3.5 Plus / 3.6 Plus / 3.7 Plus / 3.8 Max | Zen, Go | text, image, video |
+| MiMo-V2.5 | Go | text, image, audio, video |
+
+### ❌ Text-only (no image input)
+
+| Model | Availability |
+|-------|---------------|
+| GLM-5 / 5.1 / 5.2 / 5.3 | Zen, Go |
+| DeepSeek V4 Pro / V4 Flash (incl. Free) | Zen, Go |
+| MiniMax M2.5 / M2.7 / M3 (Go) | Zen, Go — note: MiniMax M3 has vision on Zen but **not** on Go |
+| Qwen3.7 Max | Zen, Go |
+| Hy3 / Hy3 Free | Zen, Go |
+| MiMo-V2.5-Pro | Go — note: loses vision that the base MiMo-V2.5 has |
+| Big Pickle | Zen |
+
+Verify a specific model's current modalities with `/models` in the TUI, or query `https://models.dev/api.json` directly.
+
 ## Setup on a new machine
 
 ### 1. Clone the repo

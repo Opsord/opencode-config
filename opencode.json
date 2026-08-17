@@ -105,7 +105,9 @@
             "npx ng*": "allow",
             "npx eslint*": "allow",
             "npx prettier*": "allow",
+            "npx --no-install playwright*": "allow",
             "npx *": "ask",
+            "playwright-cli*": "allow",
             "New-Item*": "ask",
             "Set-Content*": "ask",
             "Add-Content*": "ask",
@@ -129,10 +131,26 @@
                 "npx",
                 "-y",
                 "figma-developer-mcp",
-                "--figma-api-key={file:.figma-api-key}",
+                "--figma-api-key={file:.keys/.figma-api-key}",
                 "--stdio"
             ],
             "enabled": true
+        },
+        "stitch-work": {
+            "type": "remote",
+            "url": "https://stitch.googleapis.com/mcp",
+            "enabled": true,
+            "headers": {
+                "X-Goog-Api-Key": "{file:.keys/.stitch-cargoability-api-key}"
+            }
+        },
+        "stitch-personal": {
+            "type": "remote",
+            "url": "https://stitch.googleapis.com/mcp",
+            "enabled": false,
+            "headers": {
+                "X-Goog-Api-Key": "{file:.keys/.stitch-personal-api-key}"
+            }
         }
     }
 }

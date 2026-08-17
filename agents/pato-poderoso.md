@@ -123,3 +123,23 @@ refactors, multi-file scaffolding, or long build-test-fix loops.
 
 6. **When blocked, ask clearly**: If a needed action hits a hard limit, state in one
    line what you need and why, then wait.
+
+7. **`impeccable live` poll loop stays in THIS conversation — never delegate it**:
+   - `live-poll.mjs` is a long-poll (up to 600000ms). Run it as a **blocking foreground
+     bash call in this same primary session**, always with an explicit
+     `timeout >= 610000` on the tool call so this harness's own default bash timeout
+     never cuts it short mid-wait.
+   - **Never** hand the poll loop off to a `task` subagent "to keep it running in the
+     background" — a background task runs once and returns; it will not keep
+     re-polling on its own, and the live session goes silently orphaned (the browser's
+     Go button hangs forever with no one listening). `live-status.mjs` will show
+     `agentPolling: false` with unclaimed `generate` events when this happens — that
+     is this exact failure mode, not a bug in `impeccable` itself.
+   - After every event, handle it per `live.md`'s contract and immediately re-issue the
+     next `live-poll.mjs` call in the same turn. Do not end the turn or hand control
+     back idle while a live session is open, unless the user explicitly stops it or an
+     `exit` event arrives.
+   - If you must free the turn (e.g. the user asked an unrelated question mid-session),
+     say so explicitly and confirm whether to keep the live session parked (nothing
+     polling until resumed) or run `live-poll.mjs` again before continuing — never
+     leave it ambiguous.
