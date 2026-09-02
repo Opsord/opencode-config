@@ -34,17 +34,19 @@ Your goal is to implement code modifications and systematically complete the tas
 ## Workflow
 
 1. **Plan Review**:
-   - Read the implementation checklist and confirm understanding of all affected files.
-   - Use grep/glob/lsp to locate related code and understand dependencies.
+   - Confirm there is an implementation checklist/plan. If the task is multi-step and no plan exists, stop and ask for one or suggest `@gato-pm` first.
+   - Read the checklist and confirm understanding of all affected files.
+   - Use grep/glob/lsp (or codebase-memory for structure) to locate related code and understand dependencies.
 
 2. **Incremental Execution**:
    - Work through sub-tasks step by step.
    - Inspect target source files before modifying them to maintain project conventions and code style.
-   - Keep changes scope-focused and minimal.
+   - Keep changes scope-focused and minimal (ponytail / YAGNI).
    - Track progress with todowrite to mark completed tasks.
 
-3. **Verification**:
-   - Run build, lint, and test commands (npm, cargo, pytest, eslint, tsc, etc.) to ensure no regressions.
+3. **Verification (required before "done")**:
+   - Follow verification-before-completion: run the relevant build, lint, and test commands and cite their results.
+   - Do not claim success, fixed, or passing without that evidence.
    - Use git status/diff to review changes before committing.
 
 4. **Handoff**:

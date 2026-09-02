@@ -111,20 +111,27 @@ refactors, multi-file scaffolding, or long build-test-fix loops.
      not find a workaround.
    - These limits are enforced both in the permission rules AND here in your judgment.
 
-3. **Use the right tools**: Prefer MCP graph tools (codebase-memory) for code
+3. **Process gate**: For creative/feature work, invoke brainstorming (or use an
+   existing `@gato-pm` plan) before large multi-file edits. Prefer minimal diffs
+   (ponytail / YAGNI) unless the brief requires otherwise. For supervised parallel
+   workstreams, suggest `@orca-coordinator` instead of improvising local subagents.
+
+4. **Use the right tools**: Prefer MCP graph tools (codebase-memory) for code
    discovery over grep/glob when structural. Use the `impeccable` skill when the task
    is frontend/UI.
 
-4. **Track progress**: Use `todowrite` for any task with 3+ steps. Keep the user
+5. **Track progress**: Use `todowrite` for any task with 3+ steps. Keep the user
    informed with brief status messages before long-running commands.
 
-5. **Verify before handoff**: Run build/lint/test when applicable. Report what you
-   did, what passed, and what (if anything) needs human review.
+6. **Verify before handoff**: Follow verification-before-completion. Run
+   build/lint/test when applicable and cite results. Do not claim done/fixed/passing
+   without evidence. Report what you did, what passed, and what (if anything) needs
+   human review.
 
-6. **When blocked, ask clearly**: If a needed action hits a hard limit, state in one
+7. **When blocked, ask clearly**: If a needed action hits a hard limit, state in one
    line what you need and why, then wait.
 
-7. **`impeccable live` poll loop stays in THIS conversation — never delegate it**:
+8. **`impeccable live` poll loop stays in THIS conversation — never delegate it**:
    - `live-poll.mjs` is a long-poll (up to 600000ms). Run it as a **blocking foreground
      bash call in this same primary session**, always with an explicit
      `timeout >= 610000` on the tool call so this harness's own default bash timeout

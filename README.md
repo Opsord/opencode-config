@@ -6,58 +6,84 @@ Global [opencode](https://opencode.ai) configuration stored at `~/.config/openco
 
 ```
 ~/.config/opencode/
-├── opencode.json            # Main config: permissions, plugins, MCP servers
+├── opencode.json            # Main config: permissions, plugins, MCP, default agent
 ├── opencode.jsonc           # Secondary config: codebase-memory-mcp server
-├── AGENTS.md                # Global system prompt injected into every session
+├── AGENTS.md                # Global system prompt (graph-first, ctx7, process)
 ├── package.json             # Plugin dependencies (gitignored)
 ├── package-lock.json        # Lock file (gitignored)
 ├── node_modules/            # Installed plugins (gitignored)
 ├── agents/                  # Custom agent definitions
 │   ├── gato-pm.md           # Technical PM: plans features, generates checklists
-│   ├── hormiga-dev.md       # Senior dev: executes implementation plans
+│   ├── hormiga-dev.md       # Senior dev (default_agent): executes plans
 │   ├── raton-auditor.md     # Auditor: quality, security, YAGNI (subagent)
 │   ├── cuervo-pensador.md   # opencode config specialist
 │   ├── pato-poderoso.md     # Heavy-duty execution agent (broad permissions)
+│   ├── orca-coordinator.md  # Orca multi-agent orchestration coordinator
 │   ├── codebase-memory.md   # Graph lookup Tier 2 (subagent)
 │   ├── codebase-memory-auditor.md  # Graph audit Tier 3 (subagent)
 │   └── codebase-memory-scout.md   # Fast graph lookup Tier 1 (subagent)
 ├── skills/
 │   └── codebase-memory/
-│       └── SKILL.md         # Custom skill for the knowledge graph
+│       └── SKILL.md         # Knowledge-graph skill
 ├── plugins/
 │   └── cbm-augment.ts       # Plugin: enriches grep/glob results with graph context
-└── .figma-api-key           # Figma API key (gitignored)
+└── .keys/                   # API keys (gitignored)
 ```
 
 ## Installed plugins
 
 | Plugin | Version | Description |
 |--------|---------|-------------|
-| `superpowers` | github:obra/superpowers | Skills framework: brainstorming, TDD, systematic debugging, etc. |
-| `@dietrichgebert/ponytail` | ^4.9.0 | Lazy dev mode: enforces the simplest solution that works (YAGNI) |
+| `superpowers` | github:obra/superpowers | Process skills: brainstorming, TDD, systematic debugging, verification |
+| `@dietrichgebert/ponytail` | ^4.9.0 | YAGNI / minimal diffs |
 | `@opencode-ai/plugin` | 1.18.4 | opencode plugin SDK (required by the plugins above) |
 
-## Active MCP servers
+## Global skills
 
-| Server | Description |
-|--------|-------------|
-| `codebase-memory-mcp` | Codebase knowledge graph: structural search, call tracing, impact analysis |
-| `figma-xintec` | Figma integration via `figma-developer-mcp` (npx) |
+| Skill | Location | Scope |
+|-------|----------|-------|
+| `codebase-memory` | `skills/codebase-memory/` | Global — structural code queries |
+| superpowers / ponytail skills | via `plugin` | Global — process & minimalism |
 
-## Available agents
+**Project-only (not in this global config):** Stitch design skills, `playwright-cli`, and similar domain skills. Install them under a project's `.opencode/skills/` or `.agents/skills/` when needed. Orca stubs (`orca-cli`, `orchestration`) live in `~/.agents/skills/` and are discovered from there when present.
 
-Invoke with `@agent-name` inside opencode:
+### Global vs project
+
+| Keep global | Put on the project |
+|-------------|--------------------|
+| `codebase-memory`, superpowers, ponytail | Stitch, Playwright, Figma-heavy workflows, product-specific skills |
+
+## MCP servers
+
+| Server | Enabled | Description |
+|--------|---------|-------------|
+| `codebase-memory-mcp` | yes (`opencode.jsonc`) | Knowledge graph |
+| `figma-xintec` | no | Figma via `figma-developer-mcp` |
+| `stitch-cargoability` | no | Stitch MCP (enable in a Stitch project if needed) |
+| `stitch-personal` | no | Stitch MCP (enable in a Stitch project if needed) |
+
+## Agents
+
+Built-in OpenCode agents **`plan`** and **`build`** are disabled. Default primary agent: **`hormiga-dev`**.
 
 | Agent | Mode | Role |
 |-------|------|------|
-| `@gato-pm` | primary | Plans features: analyzes requirements, explores code, generates detailed checklists |
-| `@hormiga-dev` | primary | Executes plans: implements code following gato-pm's checklist |
+| `@hormiga-dev` | primary (default) | Executes plans: implements checklists with verification before "done" |
+| `@gato-pm` | primary | Plans features: requirements → checklist → handoff |
+| `@pato-poderoso` | primary | Heavy-duty execution with broad bash autonomy |
+| `@cuervo-pensador` | primary | Audits/optimizes this opencode config |
+| `@orca-coordinator` | primary | Orca supervised multi-agent orchestration (no product code edits) |
 | `@raton-auditor` | subagent | Audits changes: security, architecture, performance, YAGNI |
-| `@cuervo-pensador` | primary | Audits and optimizes the opencode config itself |
-| `@pato-poderoso` | primary | Heavy-duty execution with maximum autonomy (large refactors, UI iterations) |
-| `@codebase-memory` | subagent | Graph lookup Tier 2 (directed verification) |
-| `@codebase-memory-auditor` | subagent | Graph audit Tier 3 (full coverage) |
-| `@codebase-memory-scout` | subagent | Graph lookup Tier 1 (fast and provisional) |
+| `@codebase-memory` | subagent | Graph lookup Tier 2 |
+| `@codebase-memory-auditor` | subagent | Graph audit Tier 3 |
+| `@codebase-memory-scout` | subagent | Graph lookup Tier 1 |
+
+### `@orca-coordinator` quick start
+
+1. Orca app running; Experimental → Orchestration enabled.
+2. Invoke `@orca-coordinator` and ask it to supervise a multi-agent split.
+3. It resolves the CLI, runs `orca status --json`, then `orca skills get orchestration` before dispatching workers (`--agent opencode|claude|codex|…`).
+4. For unsupervised handoffs only, it uses the `orca-cli` skill instead of a supervised Run.
 
 ## Model vision support (OpenCode Zen / Go)
 
@@ -65,7 +91,7 @@ _Last updated: 2026-08-16 — source: [models.dev](https://models.dev/api.json).
 
 Needed for `impeccable`'s `live` (annotated screenshots) and `critique`/`audit` (visual inspection) flows. Re-check `models.dev` before trusting this table long-term — providers add/drop image support between releases.
 
-### ✅ Vision-capable (accepts images)
+### Vision-capable (accepts images)
 
 | Model | Availability | Input modalities |
 |-------|---------------|-------------------|
@@ -78,7 +104,7 @@ Needed for `impeccable`'s `live` (annotated screenshots) and `critique`/`audit` 
 | Qwen3.5 Plus / 3.6 Plus / 3.7 Plus / 3.8 Max | Zen, Go | text, image, video |
 | MiMo-V2.5 | Go | text, image, audio, video |
 
-### ❌ Text-only (no image input)
+### Text-only (no image input)
 
 | Model | Availability |
 |-------|---------------|
@@ -137,32 +163,19 @@ Then **update the binary path** in two places:
 const BIN = 'C:/YOUR/PATH/codebase-memory-mcp.exe';
 ```
 
-### 4. Configure Figma (optional)
+### 4. Configure Figma / Stitch keys (optional)
 
-Create the `.figma-api-key` file with your Figma personal access token:
+Keys live under `.keys/` (or legacy `.figma-api-key`). MCP entries for Figma and Stitch stay in `opencode.json` with `"enabled": false` until you turn them on for a project that needs them.
 
-```bash
-echo "figd_XXXXXXXXXXXXXXXX" > ~/.config/opencode/.figma-api-key
-```
+### 5. Verify
 
-Get a token at: **Figma → Settings → Security → Personal access tokens**
-
-If you don't use Figma, disable the server in `opencode.json`:
-```json
-"figma-xintec": { "enabled": false }
-```
-
-### 5. Verify everything works
-
-Open opencode in any project and run `@gato-pm hello` to confirm agents load correctly.
+Open opencode and confirm default agent is `hormiga-dev`, built-in `plan`/`build` are gone from Tab, and `@orca-coordinator hello` loads.
 
 ## Gitignored files
 
-The following files are **not tracked** and must be created manually:
-
 | File | Notes |
 |------|-------|
-| `.figma-api-key` | Your personal Figma API key |
-| `node_modules/` | Generated by `npm install` |
-| `package.json` | Must be created manually (see step 2 above) |
-| `package-lock.json` | Generated by `npm install` |
+| `.keys/` / `.figma-api-key` | API keys |
+| `node_modules/` | From `npm install` |
+| `package.json` | Create manually (see step 2) |
+| `package-lock.json` | From `npm install` |

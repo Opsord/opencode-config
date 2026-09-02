@@ -1,5 +1,14 @@
 {
     "$schema": "https://opencode.ai/config.json",
+    "default_agent": "hormiga-dev",
+    "agent": {
+        "plan": {
+            "disable": true
+        },
+        "build": {
+            "disable": true
+        }
+    },
     "permission": {
         "read": {
             "*": "allow",
@@ -88,6 +97,9 @@
             "cargo clippy*": "allow",
             "bash *superpowers*": "allow",
             "& *superpowers*": "allow",
+            "orca*": "allow",
+            "orca-ide*": "allow",
+            "orca-dev*": "allow",
             "Remove-Item*": "ask",
             "rm *": "ask",
             "Invoke-Expression*": "ask",
@@ -134,12 +146,12 @@
                 "--figma-api-key={file:.keys/.figma-api-key}",
                 "--stdio"
             ],
-            "enabled": true
+            "enabled": false
         },
-        "stitch-work": {
+        "stitch-cargoability": {
             "type": "remote",
             "url": "https://stitch.googleapis.com/mcp",
-            "enabled": true,
+            "enabled": false,
             "headers": {
                 "X-Goog-Api-Key": "{file:.keys/.stitch-cargoability-api-key}"
             }
