@@ -75,8 +75,15 @@ If a command fails with a quota error, inform the user and suggest `npx ctx7@lat
 Use the superpowers / ponytail skill workflows when they apply:
 
 - **Features / creative work**: invoke brainstorming first, or `@gato-pm` when the user wants an explicit plan.
-- **Multi-step implementation**: produce a writing-plans checklist (or use an existing one) before editing code.
+- **Skip `@gato-pm`**: single-file bugfixes, typos, one-liner config, or when the user already provided a clear checklist — go straight to `@hormiga-dev`.
+- **Multi-step implementation**: write (or consume) a plan artifact under `docs/plans/<slug>.md` before editing code; then `@hormiga-dev` implements from that file. `@pato-poderoso` only when the user asks for broad autonomy or heavy/install-heavy ops.
 - **Bugs**: use systematic-debugging before proposing a fix.
-- **Before claiming done / fixed / passing**: run verification-before-completion with real build/lint/test evidence. Do not assert success without it.
+- **Before claiming done / fixed / passing**: run verification-before-completion with real build/lint/test evidence. Do not assert success without it. `@hormiga-dev` should invoke `@raton-auditor` on the diff before final handoff.
 - Prefer minimal diffs (ponytail / YAGNI) unless the brief requires otherwise.
-- **Supervised multi-agent orchestration**: invoke `@orca-coordinator`. Do not invent OpenCode-native subagents or parallel chat as a substitute for Orca Runs/Tasks/Dispatches.
+- Stay inside OpenCode agents/skills; do not dispatch external agent CLIs (agy, Orca workers, etc.) from this config.
+
+## Bash hygiene (fewer permission prompts)
+
+- Prefer built-in tools (`grep`, `glob`, `read`, codebase-memory) over shell search when enough.
+- **One shell command per bash call.** Do not chain with `;`, `&&`, `|`, or newlines in a single bash invocation (e.g. avoid `git status; git log`). Run separate calls instead — compound strings miss allowlist patterns and fall through to ask.
+- Safe read searches via shell are allowlisted (`rg *`, `grep *`, git status/diff/log/…). Mutating git, installs, and destructive ops stay ask/deny as configured.

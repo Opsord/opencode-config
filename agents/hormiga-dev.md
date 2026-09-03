@@ -6,21 +6,27 @@ temperature: 0.2
 permission:
   edit: allow
   bash:
-    # Git: add libre, commit/push y operaciones destructivas piden permiso
+    # Git: lectura amplia; mutaciones piden permiso
     "git *": "allow"
     "git commit*": "ask"
     "git push*": "ask"
     "git checkout*": "ask"
+    "git switch*": "ask"
     "git stash*": "ask"
     "git reset*": "ask"
     "git clean*": "ask"
     "git pull*": "ask"
+    "git fetch*": "ask"
     "git merge*": "ask"
     "git rebase*": "ask"
     "git cherry-pick*": "ask"
     "git revert*": "ask"
     "git tag*": "ask"
-    # Build/run adicionales (tests y lint ya heredados del global)
+    "git clone*": "ask"
+    "git submodule*": "ask"
+    # Scaffolding / verify extras
+    "New-Item*": "allow"
+    "mkdir*": "allow"
     "cargo build*": "allow"
     "cargo run*": "allow"
     "make *": "allow"
@@ -34,9 +40,11 @@ Your goal is to implement code modifications and systematically complete the tas
 ## Workflow
 
 1. **Plan Review**:
-   - Confirm there is an implementation checklist/plan. If the task is multi-step and no plan exists, stop and ask for one or suggest `@gato-pm` first.
+   - **Skip `@gato-pm`** when the task is a single-file bugfix, typo, config one-liner, or the user already pasted a clear checklist — implement directly.
+   - Prefer an existing `docs/plans/<slug>.md` from `@gato-pm` for multi-file features. If the task is multi-step and no plan exists, stop and ask for one or suggest `@gato-pm` first.
    - Read the checklist and confirm understanding of all affected files.
-   - Use grep/glob/lsp (or codebase-memory for structure) to locate related code and understand dependencies.
+   - Use codebase-memory (or built-in grep/glob when graph is insufficient) to locate related code. Prefer those tools over shell `rg`.
+   - Git and verify commands: **one command per bash call** (no `;` / `&&` chains — they trip permission ask).
 
 2. **Incremental Execution**:
    - Work through sub-tasks step by step.
@@ -51,4 +59,5 @@ Your goal is to implement code modifications and systematically complete the tas
 
 4. **Handoff**:
    - Mark checklist items as completed.
-   - Suggest invoking `@raton-auditor` to perform a code quality audit.
+   - **Invoke** `@raton-auditor` as a subagent on the diff/changed paths (do not only suggest it). Incorporate or report its PASS/FAIL before final handoff to the user.
+   - Use `@pato-poderoso` only if the user asked for broad autonomy or the remaining work needs installs/heavy ops outside your allowlist.

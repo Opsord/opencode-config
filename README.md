@@ -18,7 +18,6 @@ Global [opencode](https://opencode.ai) configuration stored at `~/.config/openco
 │   ├── raton-auditor.md     # Auditor: quality, security, YAGNI (subagent)
 │   ├── cuervo-pensador.md   # opencode config specialist
 │   ├── pato-poderoso.md     # Heavy-duty execution agent (broad permissions)
-│   ├── orca-coordinator.md  # Orca multi-agent orchestration coordinator
 │   ├── codebase-memory.md   # Graph lookup Tier 2 (subagent)
 │   ├── codebase-memory-auditor.md  # Graph audit Tier 3 (subagent)
 │   └── codebase-memory-scout.md   # Fast graph lookup Tier 1 (subagent)
@@ -45,13 +44,23 @@ Global [opencode](https://opencode.ai) configuration stored at `~/.config/openco
 | `codebase-memory` | `skills/codebase-memory/` | Global — structural code queries |
 | superpowers / ponytail skills | via `plugin` | Global — process & minimalism |
 
-**Project-only (not in this global config):** Stitch design skills, `playwright-cli`, and similar domain skills. Install them under a project's `.opencode/skills/` or `.agents/skills/` when needed. Orca stubs (`orca-cli`, `orchestration`) live in `~/.agents/skills/` and are discovered from there when present.
+### Shared hub (`~/.agents/skills`)
+
+Optional cross-runtime skills (not required for this OpenCode-only workflow):
+
+| Skill | Role |
+|-------|------|
+| `codebase-memory` | Knowledge-graph workflows (also mirrored under `skills/` above) |
+| `find-docs` | Current library docs via Context7 CLI |
+| `impeccable` | Frontend craft / UI critique |
+
+**Project-only (not in this global config):** Stitch, Playwright, and similar domain skills under a project's `.opencode/skills/` or `.agents/skills/` when needed.
 
 ### Global vs project
 
-| Keep global | Put on the project |
-|-------------|--------------------|
-| `codebase-memory`, superpowers, ponytail | Stitch, Playwright, Figma-heavy workflows, product-specific skills |
+| Keep global / hub | Put on the project |
+|-------------------|--------------------|
+| `codebase-memory`, superpowers, ponytail, `find-docs`, `impeccable` | Stitch, Playwright, Figma-heavy workflows, product-specific skills |
 
 ## MCP servers
 
@@ -69,21 +78,15 @@ Built-in OpenCode agents **`plan`** and **`build`** are disabled. Default primar
 | Agent | Mode | Role |
 |-------|------|------|
 | `@hormiga-dev` | primary (default) | Executes plans: implements checklists with verification before "done" |
-| `@gato-pm` | primary | Plans features: requirements → checklist → handoff |
+| `@gato-pm` | primary | Plans features → writes `docs/plans/<slug>.md` |
 | `@pato-poderoso` | primary | Heavy-duty execution with broad bash autonomy |
 | `@cuervo-pensador` | primary | Audits/optimizes this opencode config |
-| `@orca-coordinator` | primary | Orca supervised multi-agent orchestration (no product code edits) |
 | `@raton-auditor` | subagent | Audits changes: security, architecture, performance, YAGNI |
 | `@codebase-memory` | subagent | Graph lookup Tier 2 |
 | `@codebase-memory-auditor` | subagent | Graph audit Tier 3 |
 | `@codebase-memory-scout` | subagent | Graph lookup Tier 1 |
 
-### `@orca-coordinator` quick start
-
-1. Orca app running; Experimental → Orchestration enabled.
-2. Invoke `@orca-coordinator` and ask it to supervise a multi-agent split.
-3. It resolves the CLI, runs `orca status --json`, then `orca skills get orchestration` before dispatching workers (`--agent opencode|claude|codex|…`).
-4. For unsupervised handoffs only, it uses the `orca-cli` skill instead of a supervised Run.
+**Daily loop (OpenCode only):** small fixes → `@hormiga-dev`; features → `@gato-pm` (`docs/plans/`, gitignored) → `@hormiga-dev` → `@raton-auditor`. Use `@pato-poderoso` only when explicitly requested for broad/heavy autonomy.
 
 ## Model vision support (OpenCode Zen / Go)
 
@@ -169,7 +172,7 @@ Keys live under `.keys/` (or legacy `.figma-api-key`). MCP entries for Figma and
 
 ### 5. Verify
 
-Open opencode and confirm default agent is `hormiga-dev`, built-in `plan`/`build` are gone from Tab, and `@orca-coordinator hello` loads.
+Open opencode and confirm default agent is `hormiga-dev`, built-in `plan`/`build` are gone from Tab, and `@gato-pm` / `@hormiga-dev` load.
 
 ## Gitignored files
 
