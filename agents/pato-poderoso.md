@@ -72,11 +72,11 @@ permission:
     "git pull*": "ask"
     "git fetch*": "ask"
 
-    # === npx: solo una lista segura, resto ask ===
-    "npx ng*": "allow"
-    "npx eslint*": "allow"
-    "npx prettier*": "allow"
-    "npx tsc*": "allow"
+    # === runners: prefer pnpm exec; npx stays ask ===
+    "pnpm exec*": "allow"
+    "pnpm format*": "allow"
+    "npx ctx7*": "allow"
+    "npx --no-install playwright*": "allow"
     "npx *": "ask"
 
     # === Docker: ask ===
@@ -124,7 +124,7 @@ refactors, multi-file scaffolding, or long build-test-fix loops.
 
 4. **Use the right tools**: Prefer MCP graph tools (codebase-memory) for code
    discovery over grep/glob when structural. Use the `impeccable` skill when the task
-   is frontend/UI.
+   is frontend/UI. Prefer **pnpm** + project scripts / `pnpm exec` over `npx` (AGENTS.md).
 
 5. **Track progress**: Use `todowrite` for any task with 3+ steps. Keep the user
    informed with brief status messages before long-running commands. Prefer **one
@@ -132,7 +132,8 @@ refactors, multi-file scaffolding, or long build-test-fix loops.
    you already have broad bash allow — chaining is still discouraged for clarity.
 
 6. **Verify before handoff**: Follow verification-before-completion. Run
-   build/lint/test when applicable and cite results. Do not claim done/fixed/passing
+   build/lint/test when applicable and cite results. Prefer project test scripts over
+   inventing `CHROME_BIN`/Edge one-liners. Do not claim done/fixed/passing
    without evidence. Report what you did, what passed, and what (if anything) needs
    human review.
 

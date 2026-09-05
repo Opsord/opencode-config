@@ -87,3 +87,29 @@ Use the superpowers / ponytail skill workflows when they apply:
 - Prefer built-in tools (`grep`, `glob`, `read`, codebase-memory) over shell search when enough.
 - **One shell command per bash call.** Do not chain with `;`, `&&`, `|`, or newlines in a single bash invocation (e.g. avoid `git status; git log`). Run separate calls instead — compound strings miss allowlist patterns and fall through to ask.
 - Safe read searches via shell are allowlisted (`rg *`, `grep *`, git status/diff/log/…). Mutating git, installs, and destructive ops stay ask/deny as configured.
+
+## Package manager & local bins (normalize runners)
+
+- Detect the project package manager once: `packageManager` in `package.json`, else lockfile (`pnpm-lock.yaml` → pnpm, `package-lock.json` / `npm-shrinkwrap.json` → npm, `yarn.lock` → yarn, `bun.lock` / `bun.lockb` → bun).
+- **Default to pnpm** when unclear or when both could work. Use npm/yarn/bun only when the project clearly uses them.
+- Prefer `pnpm <script>` / `pnpm run <script>` over inventing raw tool CLIs.
+- For Prettier, ESLint, TypeScript, Vitest, Angular CLI, etc. use this ladder — **never jump to `npx` first**:
+  1. Project script (`pnpm format`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, …) if defined in `package.json`
+  2. `pnpm exec <bin> …` (or `npm exec` / `yarn` / `bunx` matching the project PM) — local `node_modules` binary/version
+  3. Direct `./node_modules/.bin/<bin>` only if exec is unavailable
+  4. `npx` / `pnpm dlx` **last resort** (wrong version risk, extra download, often Ask) — only if there is no local binary/script; say why in the pre-execution justification
+- Do **not** run `npx prettier` / `npx eslint` / `npx tsc` / `npx ng` when a dependency or script already exists.
+
+## Frontend unit tests (Karma / `ng test`)
+
+- Do **not** invent `$env:CHROME_BIN="…\msedge.exe"; npm test -- --watch=false --browsers=ChromeHeadless` (hardcoded Edge path + npm + `;` chain).
+- Prefer project scripts (`pnpm test`, `pnpm run test:ci`) with the detected PM.
+- Only add `--watch=false` / `--browsers=ChromeHeadless` if the script does not already define them and watch would block the session.
+- Never hardcode absolute Chrome/Edge paths. If the browser binary is missing, try the project script once; on failure, record under `blocked_actions` / the report that the machine needs Chrome or a durable `CHROME_BIN` / karma launcher in the project or user env — do not rediscover Edge each turn.
+- Prefer scoped project-supported includes over full-suite + improvised browser hacks.
+
+## Backend / Jest tests (no env chains)
+
+- Do **not** invent `$env:NODE_OPTIONS="--max-old-space-size=4096"; npm test -- --runInBand` (PowerShell env + npm + `;` chain). One bash call = one command.
+- Prefer `pnpm test`, `pnpm run test:ci`, or `pnpm test -- --runInBand` (project PM) as a single invocation.
+- If memory limits are needed, use an existing `package.json` script or record under `blocked_actions` that the project should add `NODE_OPTIONS` / `--max-old-space-size` to a script — do not chain `$env:…; …`.

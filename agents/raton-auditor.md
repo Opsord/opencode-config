@@ -54,8 +54,10 @@ permission:
     "pnpm lint*": "allow"
     "pnpm build*": "allow"
     "pnpm format:check*": "allow"
+    "pnpm exec*": "allow"
     "npm test*": "allow"
     "npm run *": "allow"
+    "npm exec*": "allow"
     "bun test*": "allow"
     "bun run *": "allow"
     "node *": "allow"
@@ -71,12 +73,10 @@ permission:
     "cargo check*": "allow"
     "cargo clippy*": "allow"
     "cargo build*": "allow"
-    "npx eslint*": "allow"
-    "npx prettier*": "allow"
-    "npx tsc*": "allow"
     "npx *": "ask"
     "pnpm install*": "ask"
     "pnpm add*": "ask"
+    "pnpm dlx*": "ask"
     "npm install*": "ask"
     "npm i*": "ask"
 ---
@@ -119,6 +119,7 @@ Only if all 5 checks pass → proceed with detailed review.
 
 4. **Verification**:
    - Run tests/lint/typecheck to verify code actually works (one command per bash call)
+   - Prefer **pnpm** + project scripts / `pnpm exec` over `npx` (see AGENTS.md)
    - Check for regressions in existing functionality
    - Do not install packages; if a verify command is missing, note it and continue
 

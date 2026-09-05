@@ -59,7 +59,7 @@ created: <YYYY-MM-DD>
 
 ### Task Checklist
 - [ ] 1. [Deliverable]
-- [ ] 2. [Include verify commands where relevant]
+- [ ] 2. [Include verify commands where relevant — prefer `pnpm` scripts / `pnpm exec`, not `npx`]
 
 ### Task Dependencies
 - Task 2 depends on Task 1 (why)
@@ -70,7 +70,7 @@ created: <YYYY-MM-DD>
 
 ### Success Criteria
 - [ ] [Measurable outcome]
-- [ ] [Build/lint/test commands that must pass]
+- [ ] [Build/lint/test commands that must pass — project PM; no hardcoded `CHROME_BIN`/Edge paths]
 
 ### Risks & Considerations
 - [Edge cases, breaking changes, migrations]
