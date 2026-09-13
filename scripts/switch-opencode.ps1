@@ -110,7 +110,8 @@ if ($cfg.Kind -eq 'none') {
 
 $other = if ($cfg.Kind -eq 'v1') { 'v2' } else { 'v1' }
 $otherLabel = if ($other -eq 'v1') { 'OpenCode 1 (opencode-v1)' } else { 'OpenCode 2 (opencode-v2)' }
-$ans = Read-Host "Switch to $otherLabel? [Y/n]"
+Write-Host "Target: $otherLabel"
+$ans = Read-Host "Switch to ${otherLabel}? [Y/n]"
 if ($null -eq $ans -or -not (Test-Yes $ans.Trim())) {
   Write-Host 'Cancelled.'
   exit 0
