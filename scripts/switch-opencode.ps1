@@ -52,10 +52,42 @@ function Uninstall-CurrentCli {
   }
 }
 
+function Stop-OpenCodeProcesses {
+  $procs = @(Get-Process -Name opencode -ErrorAction SilentlyContinue)
+  if (-not $procs) { return }
+  Write-Host "Stopping $($procs.Count) OpenCode process(es) (TUI / serve --service)."
+  $procs | Stop-Process -Force
+  Start-Sleep -Seconds 1
+}
+
+function Repair-AfterSwitch([string]$Target) {
+  if ($Target -eq 'v1') {
+    if (Test-Path -LiteralPath '.opencode') {
+      Write-Host 'Removing leftover .opencode/ (v2 discovery dir; triggers a failed npm install on v1).'
+      Remove-Item -LiteralPath '.opencode' -Recurse -Force
+    }
+    if (-not (Test-Path -LiteralPath 'package.json')) {
+      Write-Host 'Writing local v1 package.json (gitignored) so plugin install can succeed.'
+      @{
+        dependencies = @{
+          '@dietrichgebert/ponytail' = '^4.9.0'
+          '@opencode-ai/plugin'      = '1.18.4'
+          superpowers                = 'github:obra/superpowers'
+        }
+      } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath 'package.json' -Encoding utf8NoBOM
+    }
+  }
+
+  if (Test-Path -LiteralPath 'package.json') {
+    Write-Host 'pnpm install (so the next TUI open does not hang on a failed background npm install).'
+    pnpm install
+  }
+}
+
 function Switch-To([string]$Target) {
   $branch = if ($Target -eq 'v1') { 'opencode-v1' } else { 'opencode-v2' }
 
-  Write-Host 'Close the OpenCode TUI first.'
+  Stop-OpenCodeProcesses
   $currentBranch = (git branch --show-current).Trim()
   $major = (Get-OpenCodeCli).Major
 
@@ -73,6 +105,8 @@ function Switch-To([string]$Target) {
     }
     if ((git branch --show-current).Trim() -ne $branch) { git switch $branch }
   }
+
+  Repair-AfterSwitch $Target
 
   Write-Host "branch: $((git branch --show-current).Trim())"
   Write-Host -NoNewline 'cli: '
