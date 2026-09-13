@@ -1,15 +1,231 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "codebase-memory-mcp": {
-      "command": [
-        "C:/Users/andre/AppData/Local/Programs/codebase-memory-mcp/codebase-memory-mcp.exe"
-      ],
-      "type": "local",
-      "enabled": true,
-      "environment": {
-        "CBM_MEM_BUDGET_MB": "4096"
-      }
+  "$schema": "https://opencode.ai/v2/config.json",
+  "default_agent": "hormiga-dev",
+  "agents": {
+    "plan": {
+      "disabled": true
+    },
+    "build": {
+      "disabled": true
     }
   },
+  // Last-Wins: broad primero, excepciones y restricciones al final
+  "permissions": [
+    // --- Directorios externos ---
+    { "action": "external_directory", "resource": "*", "effect": "ask" },
+    { "action": "external_directory", "resource": "~/.config/opencode/**", "effect": "allow" },
+    { "action": "external_directory", "resource": "~/.cache/opencode/**", "effect": "allow" },
+    { "action": "external_directory", "resource": "~/.agents/skills/**", "effect": "allow" },
+
+    // --- Herramientas de descubrimiento y utilitarias ---
+    { "action": "glob", "resource": "*", "effect": "allow" },
+    { "action": "grep", "resource": "*", "effect": "allow" },
+    { "action": "todowrite", "resource": "*", "effect": "allow" },
+    { "action": "skill", "resource": "*", "effect": "allow" },
+
+    // --- Lectura de archivos (read) ---
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "read", "resource": "*.env*", "effect": "ask" },
+    { "action": "read", "resource": ".keys/**", "effect": "ask" },
+    { "action": "read", "resource": "*.pem", "effect": "ask" },
+    { "action": "read", "resource": "*.key", "effect": "ask" },
+    { "action": "read", "resource": "*.env.example", "effect": "allow" },
+    { "action": "read", "resource": "*.env.template", "effect": "allow" },
+
+    // --- Edición de archivos (edit / write / patch) ---
+    { "action": "edit", "resource": "*", "effect": "ask" },
+    { "action": "edit", "resource": "*.md", "effect": "allow" },
+    { "action": "edit", "resource": "*.txt", "effect": "allow" },
+    { "action": "edit", "resource": ".opencode/**", "effect": "allow" },
+    { "action": "edit", "resource": ".superpowers/**", "effect": "allow" },
+    { "action": "edit", "resource": "docs/**", "effect": "allow" },
+    { "action": "edit", "resource": "*.env*", "effect": "ask" },
+    { "action": "edit", "resource": ".keys/**", "effect": "ask" },
+    { "action": "edit", "resource": "*.pem", "effect": "ask" },
+    { "action": "edit", "resource": "*.key", "effect": "ask" },
+
+    // --- Comandos de Shell (ex-bash) ---
+    // Política base restrictiva
+    { "action": "shell", "resource": "*", "effect": "ask" },
+
+    // Comandos de inspección de PowerShell
+    { "action": "shell", "resource": "Get-ChildItem*", "effect": "allow" },
+    { "action": "shell", "resource": "Get-Content*", "effect": "allow" },
+    { "action": "shell", "resource": "Get-Item*", "effect": "allow" },
+    { "action": "shell", "resource": "Get-Command*", "effect": "allow" },
+    { "action": "shell", "resource": "Test-Path*", "effect": "allow" },
+    { "action": "shell", "resource": "Resolve-Path*", "effect": "allow" },
+    { "action": "shell", "resource": "Split-Path*", "effect": "allow" },
+    { "action": "shell", "resource": "Join-Path*", "effect": "allow" },
+    { "action": "shell", "resource": "Select-Object*", "effect": "allow" },
+    { "action": "shell", "resource": "Where-Object*", "effect": "allow" },
+    { "action": "shell", "resource": "Sort-Object*", "effect": "allow" },
+    { "action": "shell", "resource": "ForEach-Object*", "effect": "allow" },
+    { "action": "shell", "resource": "Format-Table*", "effect": "allow" },
+    { "action": "shell", "resource": "Format-List*", "effect": "allow" },
+    { "action": "shell", "resource": "Out-String*", "effect": "allow" },
+    { "action": "shell", "resource": "Out-Null*", "effect": "allow" },
+    { "action": "shell", "resource": "ConvertTo-Json*", "effect": "allow" },
+    { "action": "shell", "resource": "ConvertFrom-Json*", "effect": "allow" },
+    { "action": "shell", "resource": "Measure-Object*", "effect": "allow" },
+    { "action": "shell", "resource": "Get-Date*", "effect": "allow" },
+    { "action": "shell", "resource": "Get-Random*", "effect": "allow" },
+    { "action": "shell", "resource": "Get-Location*", "effect": "allow" },
+    { "action": "shell", "resource": "Push-Location*", "effect": "allow" },
+    { "action": "shell", "resource": "Pop-Location*", "effect": "allow" },
+    { "action": "shell", "resource": "Select-String*", "effect": "allow" },
+
+    // Comandos de inspección y lectura Unix/Coreutils
+    { "action": "shell", "resource": "dir*", "effect": "allow" },
+    { "action": "shell", "resource": "ls*", "effect": "allow" },
+    { "action": "shell", "resource": "cat*", "effect": "allow" },
+    { "action": "shell", "resource": "head*", "effect": "allow" },
+    { "action": "shell", "resource": "tail*", "effect": "allow" },
+    { "action": "shell", "resource": "wc*", "effect": "allow" },
+    { "action": "shell", "resource": "rg *", "effect": "allow" },
+    { "action": "shell", "resource": "grep *", "effect": "allow" },
+    { "action": "shell", "resource": "which*", "effect": "allow" },
+    { "action": "shell", "resource": "echo*", "effect": "allow" },
+    { "action": "shell", "resource": "Write-Output*", "effect": "allow" },
+    { "action": "shell", "resource": "pwd*", "effect": "allow" },
+
+    // Git: lectura amplia
+    { "action": "shell", "resource": "git *", "effect": "allow" },
+
+    // Package managers y runners de desarrollo
+    { "action": "shell", "resource": "pnpm test*", "effect": "allow" },
+    { "action": "shell", "resource": "pnpm run *", "effect": "allow" },
+    { "action": "shell", "resource": "pnpm lint*", "effect": "allow" },
+    { "action": "shell", "resource": "pnpm build*", "effect": "allow" },
+    { "action": "shell", "resource": "pnpm exec*", "effect": "allow" },
+    { "action": "shell", "resource": "pnpm format*", "effect": "allow" },
+    { "action": "shell", "resource": "pnpm --filter *", "effect": "allow" },
+    { "action": "shell", "resource": "pnpm -F *", "effect": "allow" },
+    { "action": "shell", "resource": "npm test*", "effect": "allow" },
+    { "action": "shell", "resource": "npm run *", "effect": "allow" },
+    { "action": "shell", "resource": "npm exec*", "effect": "allow" },
+    { "action": "shell", "resource": "bun test*", "effect": "allow" },
+    { "action": "shell", "resource": "bun run *", "effect": "allow" },
+    { "action": "shell", "resource": "bunx *", "effect": "allow" },
+    { "action": "shell", "resource": "node *", "effect": "allow" },
+    { "action": "shell", "resource": "python *", "effect": "allow" },
+    { "action": "shell", "resource": "python3 *", "effect": "allow" },
+    { "action": "shell", "resource": "pytest *", "effect": "allow" },
+    { "action": "shell", "resource": "ruff *", "effect": "allow" },
+    { "action": "shell", "resource": "eslint *", "effect": "allow" },
+    { "action": "shell", "resource": "tsc *", "effect": "allow" },
+    { "action": "shell", "resource": "prettier *", "effect": "allow" },
+    { "action": "shell", "resource": "cargo test*", "effect": "allow" },
+    { "action": "shell", "resource": "cargo check*", "effect": "allow" },
+    { "action": "shell", "resource": "cargo clippy*", "effect": "allow" },
+    { "action": "shell", "resource": "bash *superpowers*", "effect": "allow" },
+    { "action": "shell", "resource": "& *superpowers*", "effect": "allow" },
+
+    // Restricciones críticas de Git (mutaciones)
+    { "action": "shell", "resource": "git commit*", "effect": "ask" },
+    { "action": "shell", "resource": "git push*", "effect": "ask" },
+    { "action": "shell", "resource": "git pull*", "effect": "ask" },
+    { "action": "shell", "resource": "git fetch*", "effect": "ask" },
+    { "action": "shell", "resource": "git checkout*", "effect": "ask" },
+    { "action": "shell", "resource": "git switch*", "effect": "ask" },
+    { "action": "shell", "resource": "git merge*", "effect": "ask" },
+    { "action": "shell", "resource": "git rebase*", "effect": "ask" },
+    { "action": "shell", "resource": "git reset*", "effect": "ask" },
+    { "action": "shell", "resource": "git clean*", "effect": "ask" },
+    { "action": "shell", "resource": "git stash*", "effect": "ask" },
+    { "action": "shell", "resource": "git cherry-pick*", "effect": "ask" },
+    { "action": "shell", "resource": "git revert*", "effect": "ask" },
+    { "action": "shell", "resource": "git tag*", "effect": "ask" },
+    { "action": "shell", "resource": "git clone*", "effect": "ask" },
+    { "action": "shell", "resource": "git submodule*", "effect": "ask" },
+
+    // Restricciones de instalación de paquetes
+    { "action": "shell", "resource": "pnpm --filter * add*", "effect": "ask" },
+    { "action": "shell", "resource": "pnpm --filter * install*", "effect": "ask" },
+    { "action": "shell", "resource": "pnpm --filter * dlx*", "effect": "ask" },
+    { "action": "shell", "resource": "pnpm add*", "effect": "ask" },
+    { "action": "shell", "resource": "pnpm install*", "effect": "ask" },
+    { "action": "shell", "resource": "pnpm dlx*", "effect": "ask" },
+    { "action": "shell", "resource": "npm install*", "effect": "ask" },
+
+    // Comandos destructivos / ejecución dinámica
+    { "action": "shell", "resource": "Remove-Item*", "effect": "ask" },
+    { "action": "shell", "resource": "rm *", "effect": "ask" },
+    { "action": "shell", "resource": "Invoke-Expression*", "effect": "ask" },
+    { "action": "shell", "resource": "iex*", "effect": "ask" },
+    { "action": "shell", "resource": "Start-Process*", "effect": "ask" },
+    { "action": "shell", "resource": "docker*", "effect": "ask" },
+    { "action": "shell", "resource": "docker-compose*", "effect": "ask" },
+    { "action": "shell", "resource": "kubectl*", "effect": "ask" },
+    { "action": "shell", "resource": "ssh*", "effect": "ask" },
+    { "action": "shell", "resource": "scp*", "effect": "ask" },
+    { "action": "shell", "resource": "rsync*", "effect": "ask" },
+
+    // npx: broad antes, específico después
+    { "action": "shell", "resource": "npx *", "effect": "ask" },
+    { "action": "shell", "resource": "npx ctx7*", "effect": "allow" },
+    { "action": "shell", "resource": "npx --no-install playwright*", "effect": "allow" },
+    { "action": "shell", "resource": "playwright-cli*", "effect": "allow" },
+
+    // Mutaciones de archivos por shell
+    { "action": "shell", "resource": "New-Item*", "effect": "ask" },
+    { "action": "shell", "resource": "Set-Content*", "effect": "ask" },
+    { "action": "shell", "resource": "Add-Content*", "effect": "ask" },
+    { "action": "shell", "resource": "Copy-Item*", "effect": "ask" },
+    { "action": "shell", "resource": "Move-Item*", "effect": "ask" },
+    { "action": "shell", "resource": "Rename-Item*", "effect": "ask" },
+    { "action": "shell", "resource": "Set-Content *.env*", "effect": "ask" },
+    { "action": "shell", "resource": "Add-Content *.env*", "effect": "ask" },
+    { "action": "shell", "resource": "Get-Content .keys*", "effect": "ask" },
+    { "action": "shell", "resource": "cat .keys*", "effect": "ask" },
+    { "action": "shell", "resource": "* .keys*", "effect": "ask" },
+    { "action": "shell", "resource": "*.pem*", "effect": "ask" },
+    { "action": "shell", "resource": "*.key*", "effect": "ask" }
+  ],
+  "plugins": [
+    "superpowers",
+    "@dietrichgebert/ponytail",
+    "./plugins/cbm-augment.ts"
+  ],
+  "mcp": {
+    "servers": {
+      "codebase-memory-mcp": {
+        "type": "local",
+        "command": ["C:/Users/andre/.local/bin/codebase-memory-mcp.exe"],
+        "disabled": false,
+        "environment": {
+          "CBM_MEM_BUDGET_MB": "4096"
+        }
+      },
+      "figma-xintec": {
+        "type": "local",
+        "command": [
+          "cmd",
+          "/c",
+          "npx",
+          "-y",
+          "figma-developer-mcp",
+          "--figma-api-key={file:.keys/.figma-api-key}",
+          "--stdio"
+        ],
+        "disabled": true
+      },
+      "stitch-cargoability": {
+        "type": "remote",
+        "url": "https://stitch.googleapis.com/mcp",
+        "disabled": true,
+        "headers": {
+          "X-Goog-Api-Key": "{file:.keys/.stitch-cargoability-api-key}"
+        }
+      },
+      "stitch-personal": {
+        "type": "remote",
+        "url": "https://stitch.googleapis.com/mcp",
+        "disabled": true,
+        "headers": {
+          "X-Goog-Api-Key": "{file:.keys/.stitch-personal-api-key}"
+        }
+      }
+    }
+  }
 }

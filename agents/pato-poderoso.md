@@ -7,19 +7,28 @@ permission:
   read:
     "*": "allow"
     "*.env*": "ask"
+    ".keys/**": "ask"
+    "*.pem": "ask"
+    "*.key": "ask"
     "*.env.example": "allow"
     "*.env.template": "allow"
   edit:
     "*": "allow"
     "*.env*": "ask"
+    ".keys/**": "ask"
+    "*.pem": "ask"
+    "*.key": "ask"
     "*.env.example": "allow"
     "*.env.template": "allow"
   glob: allow
   grep: allow
   lsp: allow
+  todowrite: allow
+  skill: allow
   external_directory:
     "*": "ask"
     "C:\\Users\\andre\\.agents\\skills\\impeccable\\**": "allow"
+    "~/.agents/skills/**": "allow"
     "~/.config/opencode/**": "allow"
     "~/.cache/opencode/**": "allow"
   bash:
@@ -75,9 +84,9 @@ permission:
     # === runners: prefer pnpm exec; npx stays ask ===
     "pnpm exec*": "allow"
     "pnpm format*": "allow"
+    "npx *": "ask"
     "npx ctx7*": "allow"
     "npx --no-install playwright*": "allow"
-    "npx *": "ask"
 
     # === Docker: ask ===
     "docker*": "ask"

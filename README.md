@@ -1,18 +1,18 @@
-# opencode global config
+# opencode global config (OpenCode 2)
 
-Global [opencode](https://opencode.ai) configuration stored at `~/.config/opencode/`.
+Native [OpenCode 2](https://opencode.ai/v2/docs/migrate-v1/) configuration stored at `~/.config/opencode/`. The OpenCode 1.x snapshot is on branch `opencode-v1`.
 
 ## File structure
 
 ```
 ~/.config/opencode/
-├── opencode.json            # Main config: permissions, plugins, MCP, default agent
-├── opencode.jsonc           # Secondary config: codebase-memory-mcp server
+├── opencode.jsonc           # Main config: permissions, plugins, MCP, default agent
+├── cli.json                 # Terminal client config (global, v2)
 ├── AGENTS.md                # Global system prompt (graph-first, ctx7, process)
-├── package.json             # Plugin dependencies (gitignored)
-├── package-lock.json        # Lock file (gitignored)
+├── package.json             # Plugin dependencies
+├── pnpm-lock.yaml           # Lock file
 ├── node_modules/            # Installed plugins (gitignored)
-├── agents/                  # Custom agent definitions
+├── agents/                  # Custom agent definitions (v1 frontmatter; v2 translates it)
 │   ├── gato-pm.md           # Technical PM: plans features, generates checklists
 │   ├── hormiga-dev.md       # Senior dev (default_agent): executes plans
 │   ├── raton-auditor.md     # Auditor: quality, security, YAGNI (subagent)
@@ -35,14 +35,17 @@ Global [opencode](https://opencode.ai) configuration stored at `~/.config/openco
 |--------|---------|-------------|
 | `superpowers` | github:obra/superpowers | Process skills: brainstorming, TDD, systematic debugging, verification |
 | `@dietrichgebert/ponytail` | ^4.9.0 | YAGNI / minimal diffs |
-| `@opencode-ai/plugin` | 1.18.4 | opencode plugin SDK (required by the plugins above) |
+| `@opencode/plugin` | ^2.0.0 | OpenCode 2 plugin SDK (required by local plugins) |
+| `codebase-memory-augment` | local | `plugins/cbm-augment.ts` — graph context after grep/glob |
+
+`superpowers` and `ponytail` still ship V1 plugin entrypoints. V2 does not run V1 plugin implementations; if `opencode plugin list` omits them, their auto-injected skills/hooks will not load until those packages publish a V2 `Plugin.define` export. The local `cbm-augment` plugin is already on the V2 API.
 
 ## Global skills
 
 | Skill | Location | Scope |
 |-------|----------|-------|
 | `codebase-memory` | `skills/codebase-memory/` | Global — structural code queries |
-| superpowers / ponytail skills | via `plugin` | Global — process & minimalism |
+| superpowers / ponytail skills | via `plugins` | Global — process & minimalism (depends on those packages loading) |
 
 ### Shared hub (`~/.agents/skills`)
 
@@ -64,9 +67,11 @@ Optional cross-runtime skills (not required for this OpenCode-only workflow):
 
 ## MCP servers
 
+Configured under `mcp.servers` in `opencode.jsonc` (`disabled: false` to enable).
+
 | Server | Enabled | Description |
 |--------|---------|-------------|
-| `codebase-memory-mcp` | yes (`opencode.jsonc`) | Knowledge graph |
+| `codebase-memory-mcp` | yes | Knowledge graph |
 | `figma-xintec` | no | Figma via `figma-developer-mcp` |
 | `stitch-cargoability` | no | Stitch MCP (enable in a Stitch project if needed) |
 | `stitch-personal` | no | Stitch MCP (enable in a Stitch project if needed) |
@@ -87,6 +92,8 @@ Built-in OpenCode agents **`plan`** and **`build`** are disabled. Default primar
 | `@codebase-memory-scout` | subagent | Graph lookup Tier 1 |
 
 **Daily loop (OpenCode only):** small fixes → `@hormiga-dev`; features → `@gato-pm` (`docs/plans/`, gitignored) → `@hormiga-dev` → `@raton-auditor`. Use `@pato-poderoso` only when explicitly requested for broad/heavy autonomy.
+
+Permissions in `opencode.jsonc` are an ordered v2 array (last matching rule wins: broad rules first, exceptions after). Agent markdown still uses v1 `permission` / `bash` frontmatter; OpenCode 2 translates it.
 
 ## Model vision support (OpenCode Zen / Go)
 
@@ -131,23 +138,9 @@ git clone <repo-url> ~/.config/opencode
 
 ### 2. Install plugins
 
-`package.json` is gitignored, so create it first:
-
-```json
-{
-  "dependencies": {
-    "@dietrichgebert/ponytail": "^4.9.0",
-    "@opencode-ai/plugin": "1.18.4",
-    "superpowers": "github:obra/superpowers"
-  }
-}
-```
-
-Then install:
-
 ```bash
 cd ~/.config/opencode
-npm install
+pnpm install
 ```
 
 ### 3. Install codebase-memory-mcp
@@ -157,28 +150,32 @@ Download the binary from [codebase-memory-mcp releases](https://github.com/nicob
 Then **update the binary path** in two places:
 
 **`opencode.jsonc`** — the `command` field:
+
 ```jsonc
 "command": ["C:/YOUR/PATH/codebase-memory-mcp.exe"]
 ```
 
 **`plugins/cbm-augment.ts`** — the `BIN` constant:
+
 ```ts
-const BIN = 'C:/YOUR/PATH/codebase-memory-mcp.exe';
+const BIN = process.env.CBM_BIN ?? 'C:/YOUR/PATH/codebase-memory-mcp.exe';
 ```
 
 ### 4. Configure Figma / Stitch keys (optional)
 
-Keys live under `.keys/` (or legacy `.figma-api-key`). MCP entries for Figma and Stitch stay in `opencode.json` with `"enabled": false` until you turn them on for a project that needs them.
+Keys live under `.keys/` (or legacy `.figma-api-key`). MCP entries for Figma and Stitch stay in `opencode.jsonc` with `"disabled": true` until you turn them on for a project that needs them.
 
 ### 5. Verify
 
-Open opencode and confirm default agent is `hormiga-dev`, built-in `plan`/`build` are gone from Tab, and `@gato-pm` / `@hormiga-dev` load.
+Open opencode and confirm default agent is `hormiga-dev`, built-in `plan`/`build` are gone from Tab, and `@gato-pm` / `@hormiga-dev` load. Run `opencode plugin list`: `codebase-memory-augment` should appear as `local`. `superpowers` and `ponytail` may show with empty ID until those packages ship V2 entrypoints.
 
 ## Gitignored files
 
 | File | Notes |
 |------|-------|
 | `.keys/` / `.figma-api-key` | API keys |
-| `node_modules/` | From `npm install` |
-| `package.json` | Create manually (see step 2) |
-| `package-lock.json` | From `npm install` |
+| `node_modules/` | From `pnpm install` |
+| `package-lock.json` | npm lock; this repo uses pnpm |
+| `service.json` | Local OpenCode service state |
+| `*.bak` | Local backups |
+| `docs/plans/` | Gato PM implementation plans |

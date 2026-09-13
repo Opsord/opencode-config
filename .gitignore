@@ -1,8 +1,7 @@
 .env
 node_modules
-package.json
-package-lock.json
 bun.lock
+package-lock.json
 
 .playwright/
 .playwright-cli/
@@ -12,3 +11,6 @@ bun.lock
 
 # Local implementation plans (Gato PM) — do not commit
 docs/plans/
+service.json
+*.bak
+

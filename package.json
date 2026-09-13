@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@dietrichgebert/ponytail": "^4.9.0",
+    "@opencode/plugin": "^2.0.0",
+    "superpowers": "github:obra/superpowers"
+  }
+}

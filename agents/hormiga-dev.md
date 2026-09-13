@@ -5,6 +5,8 @@ color: warning
 temperature: 0.2
 permission:
   edit: allow
+  todowrite: allow
+  skill: allow
   bash:
     # Git: lectura amplia; mutaciones piden permiso
     "git *": "allow"
@@ -33,7 +35,11 @@ permission:
     "prettier *": "allow"
     "pnpm exec*": "allow"
     "pnpm format*": "allow"
+    "pnpm --filter *": "allow"
+    "pnpm -F *": "allow"
     "npx *": "ask"
+    "npx ctx7*": "allow"
+    "npx --no-install playwright*": "allow"
 ---
 
 # Role: Hormiga Dev (Senior Software Developer)
