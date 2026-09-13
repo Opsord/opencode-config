@@ -4,6 +4,8 @@ mode: primary
 color: info
 temperature: 0.1
 permission:
+  todowrite: allow
+  skill: allow
   edit:
     "*": deny
     "*.md": allow

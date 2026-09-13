@@ -1,6 +1,8 @@
-# opencode global config
+# opencode global config (OpenCode 1.x)
 
-Global [opencode](https://opencode.ai) configuration stored at `~/.config/opencode/`.
+This branch is the **OpenCode 1.x** snapshot of `~/.config/opencode/`. Native OpenCode 2 config lives on `master`.
+
+Global [opencode](https://opencode.ai) configuration.
 
 ## File structure
 
