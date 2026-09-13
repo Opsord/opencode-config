@@ -10,6 +10,11 @@ $ErrorActionPreference = 'Stop'
 $Repo = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $Repo
 
+$dirty = git status --porcelain
+if ($dirty) {
+  throw "Working tree is dirty. Commit or stash first.`n$dirty"
+}
+
 function Get-OpenCodeCli {
   $cmd = Get-Command opencode -ErrorAction SilentlyContinue
   if (-not $cmd) {
@@ -49,10 +54,6 @@ function Uninstall-CurrentCli {
 
 function Switch-To([string]$Target) {
   $branch = if ($Target -eq 'v1') { 'opencode-v1' } else { 'opencode-v2' }
-  $dirty = git status --porcelain
-  if ($dirty) {
-    throw "Working tree is dirty. Commit or stash first.`n$dirty"
-  }
 
   Write-Host 'Close the OpenCode TUI first.'
   $currentBranch = (git branch --show-current).Trim()

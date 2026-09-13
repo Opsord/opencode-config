@@ -2,7 +2,7 @@
 
 This branch is the **OpenCode 1.x** snapshot of `~/.config/opencode/`. Native OpenCode 2 config lives on `opencode-v2`. `master` is only the repo index.
 
-Flip CLI + branch. Same script on `opencode-v1`, `opencode-v2`, and `master`: prints CLI + config, then asks before switching. On `master` it reports no live config and offers v1 or v2. Close the TUI first; the working tree must be clean.
+Flip CLI + branch. Same script on `opencode-v1`, `opencode-v2`, and `master`. It aborts immediately if the working tree is dirty, then prints CLI + config, then asks before switching. On `master` it reports no live config and offers v1 or v2. Close the TUI first.
 
 ```powershell
 pwsh ./scripts/switch-opencode.ps1
