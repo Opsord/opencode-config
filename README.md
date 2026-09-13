@@ -2,11 +2,10 @@
 
 This branch is the **OpenCode 1.x** snapshot of `~/.config/opencode/`. Native OpenCode 2 config lives on `opencode-v2`. `master` is only the repo index.
 
-Flip CLI + branch (close the TUI first):
+Flip CLI + branch. Same script on `opencode-v1`, `opencode-v2`, and `master`: prints CLI + config, then asks before switching. On `master` it reports no live config and offers v1 or v2. Close the TUI first; the working tree must be clean.
 
 ```powershell
-pwsh ./scripts/switch-opencode.ps1 v1
-pwsh ./scripts/switch-opencode.ps1 v2
+pwsh ./scripts/switch-opencode.ps1
 ```
 
 Global [opencode](https://opencode.ai) configuration.
@@ -36,7 +35,7 @@ Global [opencode](https://opencode.ai) configuration.
 ├── plugins/
 │   └── cbm-augment.ts       # Plugin: enriches grep/glob results with graph context
 ├── scripts/
-│   └── switch-opencode.ps1  # Flip CLI package + git branch (v1 ↔ v2)
+│   └── switch-opencode.ps1  # Detect CLI/config, then offer to switch
 └── .keys/                   # API keys (gitignored)
 ```
 
