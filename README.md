@@ -173,7 +173,7 @@ Then **update the binary path** in two places:
 
 **`plugins/cbm-augment.ts`** — the `BIN` constant:
 ```ts
-const BIN = 'C:/YOUR/PATH/codebase-memory-mcp.exe';
+const BIN = process.env.CBM_BIN ?? 'C:/YOUR/PATH/codebase-memory-mcp.exe';
 ```
 
 ### 4. Configure Figma / Stitch keys (optional)
@@ -192,3 +192,5 @@ Open opencode and confirm default agent is `hormiga-dev`, built-in `plan`/`build
 | `node_modules/` | From `npm install` |
 | `package.json` | Create manually (see step 2) |
 | `package-lock.json` | From `npm install` |
+| `service.json` | Local OpenCode service state |
+| `*.bak` | Local backups |

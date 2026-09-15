@@ -7,6 +7,7 @@ permission:
   edit: allow
   todowrite: allow
   skill: allow
+  question: allow
   bash:
     # Git: lectura amplia; mutaciones piden permiso
     "git *": "allow"
@@ -63,7 +64,8 @@ Your goal is to implement code modifications and systematically complete the tas
    - Follow AGENTS.md package-manager rules: prefer **pnpm** (unless the project is clearly npm/yarn/bun); scripts → `pnpm exec` → never `npx prettier`/`npx eslint`/`npx ng` first.
 
 3. **Verification (required before "done")**:
-   - Follow verification-before-completion: run the relevant build, lint, and test commands and cite their results.
+    - Follow verification-before-completion: run the relevant build, lint, and test commands and cite their results.
+    - Format before commit/handoff: run `pnpm run format` if the project defines it, else the closest `pnpm exec` formatter on touched files. Re-stage what the formatter touches. Never hand off unformatted code.
    - Prefer project scripts (`pnpm test`, `pnpm run test:ci`, `pnpm lint`) over inventing flags or `CHROME_BIN=…Edge…` one-liners (see AGENTS.md frontend tests).
    - Do not claim success, fixed, or passing without that evidence.
    - Use git status/diff to review changes before committing.

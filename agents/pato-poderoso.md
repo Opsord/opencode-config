@@ -25,6 +25,7 @@ permission:
   lsp: allow
   todowrite: allow
   skill: allow
+  question: allow
   external_directory:
     "*": "ask"
     "C:\\Users\\andre\\.agents\\skills\\impeccable\\**": "allow"

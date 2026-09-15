@@ -6,6 +6,7 @@ temperature: 0.1
 permission:
   todowrite: allow
   skill: allow
+  question: allow
   edit:
     "*": deny
     "*.md": allow

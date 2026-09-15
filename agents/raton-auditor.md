@@ -121,7 +121,8 @@ Only if all 5 checks pass → proceed with detailed review.
    - Type safety: no implicit any, proper typing
 
 4. **Verification**:
-   - Run tests/lint/typecheck to verify code actually works (one command per bash call)
+    - Run tests/lint/typecheck to verify code actually works (one command per bash call)
+    - Check formatting without fixing: run `pnpm format:check*` or the project equivalent (read-only — you have `edit: deny`, never `--write`). Unformatted diff → FAIL with the exact format command the author must run.
    - Prefer **pnpm** + project scripts / `pnpm exec` over `npx` (see AGENTS.md)
    - Check for regressions in existing functionality
    - Do not install packages; if a verify command is missing, note it and continue

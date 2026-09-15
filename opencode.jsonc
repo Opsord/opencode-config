@@ -1,15 +1,213 @@
 {
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "codebase-memory-mcp": {
-      "command": [
-        "C:/Users/andre/AppData/Local/Programs/codebase-memory-mcp/codebase-memory-mcp.exe"
-      ],
-      "type": "local",
-      "enabled": true,
-      "environment": {
-        "CBM_MEM_BUDGET_MB": "4096"
-      }
+    "$schema": "https://opencode.ai/config.json",
+    "default_agent": "hormiga-dev",
+    "agent": {
+        "plan": {
+            "disable": true
+        },
+        "build": {
+            "disable": true
+        }
+    },
+    // Last-Wins: broad primero, narrow al final
+    "permission": {
+        "read": {
+            "*": "allow",
+            "*.env*": "ask",
+            ".keys/**": "ask",
+            "*.pem": "ask",
+            "*.key": "ask",
+            "*.env.example": "allow",
+            "*.env.template": "allow"
+        },
+        "edit": {
+            "*": "ask",
+            "*.md": "allow",
+            "*.txt": "allow",
+            ".opencode/**": "allow",
+            ".superpowers/**": "allow",
+            "docs/**": "allow",
+            "*.env*": "ask",
+            ".keys/**": "ask",
+            "*.pem": "ask",
+            "*.key": "ask"
+        },
+        "glob": "allow",
+        "grep": "allow",
+        "lsp": "allow",
+        "todowrite": "allow",
+        "skill": "allow",
+        "external_directory": {
+            "*": "ask",
+            "~/.config/opencode/**": "allow",
+            "~/.cache/opencode/**": "allow",
+            "~/.agents/skills/**": "allow"
+        },
+        "bash": {
+            "*": "ask",
+            "Get-ChildItem*": "allow",
+            "Get-Content*": "allow",
+            "Get-Item*": "allow",
+            "Get-Command*": "allow",
+            "Test-Path*": "allow",
+            "Resolve-Path*": "allow",
+            "Split-Path*": "allow",
+            "Join-Path*": "allow",
+            "Select-Object*": "allow",
+            "Where-Object*": "allow",
+            "Sort-Object*": "allow",
+            "ForEach-Object*": "allow",
+            "Format-Table*": "allow",
+            "Format-List*": "allow",
+            "Out-String*": "allow",
+            "Out-Null*": "allow",
+            "ConvertTo-Json*": "allow",
+            "ConvertFrom-Json*": "allow",
+            "Measure-Object*": "allow",
+            "Get-Date*": "allow",
+            "Get-Random*": "allow",
+            "Get-Location*": "allow",
+            "Push-Location*": "allow",
+            "Pop-Location*": "allow",
+            "Select-String*": "allow",
+            "dir*": "allow",
+            "ls*": "allow",
+            "cat*": "allow",
+            "head*": "allow",
+            "tail*": "allow",
+            "wc*": "allow",
+            "rg *": "allow",
+            "grep *": "allow",
+            "which*": "allow",
+            "echo*": "allow",
+            "Write-Output*": "allow",
+            "pwd*": "allow",
+            "git *": "allow",
+            "git commit*": "ask",
+            "git push*": "ask",
+            "git pull*": "ask",
+            "git fetch*": "ask",
+            "git checkout*": "ask",
+            "git switch*": "ask",
+            "git merge*": "ask",
+            "git rebase*": "ask",
+            "git reset*": "ask",
+            "git clean*": "ask",
+            "git stash*": "ask",
+            "git cherry-pick*": "ask",
+            "git revert*": "ask",
+            "git tag*": "ask",
+            "git clone*": "ask",
+            "git submodule*": "ask",
+            "pnpm test*": "allow",
+            "pnpm run *": "allow",
+            "pnpm lint*": "allow",
+            "pnpm build*": "allow",
+            "pnpm exec*": "allow",
+            "pnpm format*": "allow",
+            "pnpm --filter *": "allow",
+            "pnpm -F *": "allow",
+            "npm test*": "allow",
+            "npm run *": "allow",
+            "npm exec*": "allow",
+            "bun test*": "allow",
+            "bun run *": "allow",
+            "bunx *": "allow",
+            "node *": "allow",
+            "python *": "allow",
+            "python3 *": "allow",
+            "pytest *": "allow",
+            "ruff *": "allow",
+            "eslint *": "allow",
+            "tsc *": "allow",
+            "prettier *": "allow",
+            "cargo test*": "allow",
+            "cargo check*": "allow",
+            "cargo clippy*": "allow",
+            "bash *superpowers*": "allow",
+            "& *superpowers*": "allow",
+            "Remove-Item*": "ask",
+            "rm *": "ask",
+            "Invoke-Expression*": "ask",
+            "iex*": "ask",
+            "Start-Process*": "ask",
+            "docker*": "ask",
+            "docker-compose*": "ask",
+            "kubectl*": "ask",
+            "ssh*": "ask",
+            "scp*": "ask",
+            "rsync*": "ask",
+            "pnpm --filter * add*": "ask",
+            "pnpm --filter * install*": "ask",
+            "pnpm --filter * dlx*": "ask",
+            "pnpm add*": "ask",
+            "pnpm install*": "ask",
+            "pnpm dlx*": "ask",
+            "npm install*": "ask",
+            // npx: broad antes, específico después
+            "npx *": "ask",
+            "npx ctx7*": "allow",
+            "npx --no-install playwright*": "allow",
+            "playwright-cli*": "allow",
+            "New-Item*": "ask",
+            "Set-Content*": "ask",
+            "Add-Content*": "ask",
+            "Copy-Item*": "ask",
+            "Move-Item*": "ask",
+            "Rename-Item*": "ask",
+            "Set-Content *.env*": "ask",
+            "Add-Content *.env*": "ask",
+            // Keys fuera de git
+            "Get-Content .keys*": "ask",
+            "cat .keys*": "ask",
+            "* .keys*": "ask",
+            "*.pem*": "ask",
+            "*.key*": "ask"
+        }
+    },
+    "plugin": [
+        "C:/Users/andre/.config/opencode/node_modules/superpowers",
+        "C:/Users/andre/.config/opencode/node_modules/@dietrichgebert/ponytail"
+    ],
+    "mcp": {
+        "codebase-memory-mcp": {
+            "type": "local",
+            "command": [
+                "C:/Users/andre/.local/bin/codebase-memory-mcp.exe"
+            ],
+            "enabled": true,
+            "environment": {
+                "CBM_MEM_BUDGET_MB": "4096"
+            }
+        },
+        "figma-xintec": {
+            "type": "local",
+            "command": [
+                "cmd",
+                "/c",
+                "npx",
+                "-y",
+                "figma-developer-mcp",
+                "--figma-api-key={file:.keys/.figma-api-key}",
+                "--stdio"
+            ],
+            "enabled": false
+        },
+        "stitch-cargoability": {
+            "type": "remote",
+            "url": "https://stitch.googleapis.com/mcp",
+            "enabled": false,
+            "headers": {
+                "X-Goog-Api-Key": "{file:.keys/.stitch-cargoability-api-key}"
+            }
+        },
+        "stitch-personal": {
+            "type": "remote",
+            "url": "https://stitch.googleapis.com/mcp",
+            "enabled": false,
+            "headers": {
+                "X-Goog-Api-Key": "{file:.keys/.stitch-personal-api-key}"
+            }
+        }
     }
-  },
 }

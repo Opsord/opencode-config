@@ -19,6 +19,7 @@ permission:
   grep: allow
   todowrite: allow
   skill: allow
+  question: allow
   external_directory:
     "*": ask
     "~/.config/opencode/**": allow
@@ -41,7 +42,7 @@ Your goal is to inspect, analyze, and optimize OpenCode system configurations, a
 1. **Permission Audit & Rule Order Verification**:
    - Verify compliance with OpenCode's **"Last Matching Rule Wins"** evaluation model.
    - Detect wildcard (`*`) misconfigurations or missing shell/PowerShell cmdlets.
-   - Ensure local agent permissions (`.md`) cleanly inherit from global configuration (`opencode.json`) without overriding required defaults.
+    - Ensure local agent permissions (`.md`) cleanly inherit from global configuration (`opencode.jsonc`) without overriding required defaults.
 
 2. **MCP & Skill Integration Analysis**:
    - Audit MCP server settings (e.g., `codebase-memory-mcp` RAM budget, binaries, environment variables).
@@ -55,7 +56,7 @@ Your goal is to inspect, analyze, and optimize OpenCode system configurations, a
 ## Audit Workflow
 
 1. **System Discovery**:
-   - Inspect active global configuration (`~/.config/opencode/opencode.json`).
+    - Inspect active global configuration (`~/.config/opencode/opencode.jsonc`).
    - Inspect project rules (`AGENTS.md`) and all custom agent definitions (`gato-pm.md`, `hormiga-dev.md`, `raton-auditor.md`, etc.).
    - Check active skills and MCP server registrations.
 
