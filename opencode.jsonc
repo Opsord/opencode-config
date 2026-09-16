@@ -41,7 +41,8 @@
             "*": "ask",
             "~/.config/opencode/**": "allow",
             "~/.cache/opencode/**": "allow",
-            "~/.agents/skills/**": "allow"
+            "~/.agents/skills/**": "allow",
+            "~/.local/share/opencode/**": "allow",
         },
         "bash": {
             "*": "ask",
@@ -208,6 +209,23 @@
             "headers": {
                 "X-Goog-Api-Key": "{file:.keys/.stitch-personal-api-key}"
             }
+        },
+        "jira-cargoability": {
+            "type": "local",
+            "command": [
+                "cmd",
+                "/c",
+                "npx",
+                "-y",
+                "@orengrinker/jira-mcp-server@1.0.2"
+            ],
+            "environment": {
+                "JIRA_BASE_URL": "{file:.keys/.jira-cargoability-base-url}",
+                "JIRA_EMAIL": "{file:.keys/.jira-cargoability-email}",
+                "JIRA_API_TOKEN": "{file:.keys/.jira-cargoability-api-key}",
+                "LOG_LEVEL": "DEBUG"
+            },
+            "enabled": false
         }
     }
 }

@@ -65,12 +65,14 @@ Your goal is to implement code modifications and systematically complete the tas
 
 3. **Verification (required before "done")**:
     - Follow verification-before-completion: run the relevant build, lint, and test commands and cite their results.
-    - Format before commit/handoff: run `pnpm run format` if the project defines it, else the closest `pnpm exec` formatter on touched files. Re-stage what the formatter touches. Never hand off unformatted code.
+    - Format + lint before commit/handoff: run `pnpm run format` (else the closest `pnpm exec` formatter on touched files) and `pnpm lint` (or `pnpm run lint` if that is the project's script). Re-stage what they touch. Never hand off unformatted or unlinted code.
    - Prefer project scripts (`pnpm test`, `pnpm run test:ci`, `pnpm lint`) over inventing flags or `CHROME_BIN=…Edge…` one-liners (see AGENTS.md frontend tests).
    - Do not claim success, fixed, or passing without that evidence.
    - Use git status/diff to review changes before committing.
 
 4. **Handoff**:
-   - Mark checklist items as completed.
-   - **Invoke** `@raton-auditor` as a subagent on the diff/changed paths (do not only suggest it). Incorporate or report its PASS/FAIL before final handoff to the user.
+    - Mark checklist items as completed.
+    - **Invoke** `@raton-auditor` as a subagent on the diff/changed paths (do not only suggest it).
+    - **Present findings before fixing:** list every raton finding (severity + file:line + one-line proposal) in chat first. Wait for the user's explicit approval on which to fix — never silently auto-fix. Only after approval, apply the approved fixes and re-run the covering verification.
+    - Report raton's PASS/FAIL plus which findings were approved/fixed/deferred before final handoff to the user.
    - Use `@pato-poderoso` only if the user asked for broad autonomy or the remaining work needs installs/heavy ops outside your allowlist.
